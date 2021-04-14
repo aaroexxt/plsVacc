@@ -100,7 +100,7 @@ def vaccineCheck():
 			collate[idx][1].sort(key=fn)
 
 		for l in collate:
-			print(l[0]+": "+"mi, ".join(l[1])+"mi")
+			print(l[0]+" ("+str(len(l[1]))+"): "+"mi, ".join(l[1])+"mi")
 		
 		#print("\n\n")
 		# validList.sort(key=sortFunction, reverse=True)
