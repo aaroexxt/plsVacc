@@ -79,8 +79,18 @@ def vaccineCheck():
 			else:
 				collate[fIdx][1].append(appt[0])
 
+		for idx in range(0, len(collate)):
+			vals = collate[idx][1]
+			for j in range(0, len(vals)):
+				collate[idx][1][j] += "@"+str(round(codes.query_postal_code('94010', collate[idx][1][j])))
+			
+			def fn(e):
+				return int(e.split("@")[1])
+			
+			collate[idx][1].sort(key=fn)
+
 		for l in collate:
-			print(l[0]+": "+", ".join(l[1]))
+			print(l[0]+": "+"mi, ".join(l[1])+"mi")
 		
 		#print("\n\n")
 		# validList.sort(key=sortFunction, reverse=True)
