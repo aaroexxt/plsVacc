@@ -55,18 +55,37 @@ def vaccineCheck():
 
 
 		if p["appointments_available"] == True and ("pfizer" in vaccTypes or "unknown" in vaccTypes) and zCode in validZips:
-			validList.append([zCode, addr+", "+city+", CA, "+zCode, url, codes.query_postal_code('94010', zCode)])
+			validList.append([zCode, addr+", "+city+", CA, "+zCode, url, codes.query_postal_code('94010', zCode), brandId])
 
 	def sortFunction(e):
 		return e[3]
 
 	time = str(datetime.now().strftime("%H:%M:%S"))
 	if len(validList) > 0:
-		print("["+time+"] Found "+str(len(validList))+" appointments:\n\n")
-		
-		validList.sort(key=sortFunction, reverse=True)
+		print("\n["+time+"] Found "+str(len(validList))+" appointments:")
+
+		collate = []
 		for appt in validList:
-			print("Addr: "+appt[1]+"\nURL: "+appt[2]+"\nDist: "+str(appt[3])+"\n---------------------------")
+			inList = False
+			fIdx = 0
+			for idx in range(0, len(collate)):
+				if collate[idx][0] == appt[4]:
+					inList = True
+					fIdx = idx;
+					break
+
+			if not inList:
+				collate.append([appt[4], [appt[0]]])
+			else:
+				collate[fIdx][1].append(appt[0])
+
+		for l in collate:
+			print(l[0]+": "+", ".join(l[1]))
+		
+		#print("\n\n")
+		# validList.sort(key=sortFunction, reverse=True)
+		# for appt in validList:
+		# 	print("Addr: "+appt[1]+"\nURL: "+appt[2]+"\nDist: "+str(appt[3])+"\n---------------------------")
 	else:
 		print("["+time+"] No appts found in "+str(len(vaccList))+" places")
 
