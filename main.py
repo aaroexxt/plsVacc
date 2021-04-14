@@ -55,7 +55,7 @@ def vaccineCheck():
 
 
 		if p["appointments_available"] == True and ("pfizer" in vaccTypes or "unknown" in vaccTypes) and zCode in validZips:
-			validList.append([zCode, addr+", "+city+", CA, "+zCode, url, codes.query_postal_code('94010', zCode), brandId])
+			validList.append([zCode, addr+", "+city+", CA, "+zCode, url, codes.query_postal_code('94010', zCode), brandId, "pfizer" not in vaccTypes])
 
 	def sortFunction(e):
 		return e[3]
@@ -74,18 +74,28 @@ def vaccineCheck():
 					fIdx = idx;
 					break
 
-			if not inList:
-				collate.append([appt[4], [appt[0]]])
+			if appt[5]:
+				unknownType = "*"
 			else:
-				collate[fIdx][1].append(appt[0])
+				unknownType = ""
+
+			if not inList:
+				collate.append([appt[4], [unknownType+appt[0]]])
+			else:
+				collate[fIdx][1].append(unknownType+appt[0])
 
 		for idx in range(0, len(collate)):
 			vals = collate[idx][1]
 			for j in range(0, len(vals)):
-				collate[idx][1][j] += "@"+str(round(codes.query_postal_code('94010', collate[idx][1][j])))
+				if collate[idx][1][j][0] == "*":
+					trueVal = collate[idx][1][j][1:]
+				else:
+					trueVal = collate[idx][1][j]
+
+				collate[idx][1][j] += "@"+str(round(codes.query_postal_code('94010', trueVal)))
 			
 			def fn(e):
-				return int(e.split("@")[1])
+				return float(e.split("@")[1])
 			
 			collate[idx][1].sort(key=fn)
 
